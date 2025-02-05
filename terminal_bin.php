@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin.php - version 1 - 2025-02-04
+/* terminal_bin.php - version 1 - 2025-02-05
  *
  *  MIT License
  *
@@ -858,24 +858,13 @@ function about($args){
         
         return false;
     } else {
-        $hr = str_repeat('-', 81);
-        $href = '<a href="https://creativecommons.org/publicdomain/zero/1.0" target="_blank">';
-        $mail = 'danieldiasr@gmail.com';
-        $about = <<<"EOD"
-<pre>
-$hr
-<b>Terminix</b> &copy; 2024-2025 Daniel Dias Rodrigues &lt;<a href="mailto:$mail">$mail</a>&gt;. No rights
-reserved.
-
-This program is free software; you can redistribute it and/or modify it under the
-terms of the {$href}Creative Commons Zero 1.0 Universal (CC0 1.0) Public Domain</a>
-{$href}Dedication</a>.
-$hr
-</pre>
-EOD;
-        _log($about);
+        $contents = file_exists('LICENSE') ? file_get_contents('LICENSE') :
+            file_get_contents('https://raw.githubusercontent.com/nerun/terminix/refs/heads/main/LICENSE');
+        
+        _log('<pre>' . $contents . '</pre>');
     }
     
     return true;
 }
 ?>
+
