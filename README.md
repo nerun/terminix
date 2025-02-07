@@ -12,4 +12,4 @@ Classic ones:
 Terminix specific:
  * about - copyright and license information
  * help (or ?) - general help on commands
- * unzap - unarchiver and decompressor (bzip2, gz, tar, zip)
+ * unzap - unarchiver and decompressor (bzip2, gz, rar, tar, zip)
