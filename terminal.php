@@ -22,6 +22,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
+ */
 -->
 <!DOCTYPE html>
 <html>
@@ -106,7 +107,7 @@
                             
                             // Commands existing in the php files included above
                             $validCommands = array('about', 'cd', 'clear', 'cp', 'help', '?', 'ls',
-                                                   'mv', 'mkdir', 'pwd', 'unzap', 'rmdir', 'rm');
+                                                   'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
                             
                             if (in_array($command[0], $validCommands)) {
                                 switch($command[0]){
