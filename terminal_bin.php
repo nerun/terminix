@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin.php - version 1 - 2025-02-05
+/* terminal_bin.php - version 1 - 2025-02-04
  *
  *  MIT License
  *
@@ -36,7 +36,7 @@ define('LOGFILE', __DIR__ . '/terminal.log');
 define('CWDFILE', __DIR__ . '/terminal.cwd');
 
 $currentDir = trim(file_get_contents(CWDFILE));
-if (empty($currentDir) or !is_dir($currentDir)) {
+if (empty($currentDir) || !is_dir($currentDir)) {
     $currentDir = ROOT;
     file_put_contents(CWDFILE, $currentDir);
 }
@@ -858,7 +858,7 @@ function about($args){
         
         return false;
     } else {
-        $contents = file_exists('LICENSE') ? file_get_contents('LICENSE') :
+        $contents = file_exists('LICENSE.md') ? file_get_contents('LICENSE.md') :
             file_get_contents('https://raw.githubusercontent.com/nerun/terminix/refs/heads/main/LICENSE');
         
         _log('<pre>' . $contents . '</pre>');
@@ -867,4 +867,3 @@ function about($args){
     return true;
 }
 ?>
-

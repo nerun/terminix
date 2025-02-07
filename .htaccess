@@ -1,0 +1,3 @@
+<FilesMatch "^(?!login\.php|terminal\.php$).*$">
+    Require all denied
+</FilesMatch>

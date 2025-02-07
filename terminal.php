@@ -1,5 +1,5 @@
 <!--
-/*  terminal.php - version 1 - 2025-02-05
+/*  terminal.php - version 1 - 2025-02-04
  *
  *  MIT License
  *
@@ -24,6 +24,35 @@
  *  SOFTWARE.
  */
 -->
+
+<?php
+define('LOGIN', 'login.tmp');
+define('TIMEOUT', 900);
+
+$login = trim(file_get_contents(LOGIN));
+
+function login_status($status){
+    global $login;
+    file_put_contents(LOGIN, $status);
+    $login = trim(file_get_contents(LOGIN));
+}
+
+if (!is_file(LOGIN) || empty($login)) {
+    login_status('off');
+}
+
+if (preg_match('/^on:(\d+)$/', $login, $matches)) {
+    $unixtime = (int) $matches[1];
+    if (time() - $unixtime > TIMEOUT){
+        login_status('expired');
+        header("Location: login.php");
+    }
+} else {
+    login_status('off');
+    header("Location: login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -107,7 +136,7 @@
                             
                             // Commands existing in the php files included above
                             $validCommands = array('about', 'cd', 'clear', 'cp', 'help', '?', 'ls',
-                                                   'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
+                                                   'mv', 'mkdir', 'pwd', 'unzap', 'rmdir', 'rm');
                             
                             if (in_array($command[0], $validCommands)) {
                                 switch($command[0]){
