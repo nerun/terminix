@@ -35,7 +35,7 @@ if ($login === 'off') {
 
 // Simulação de credenciais com senha hash (use password_hash() para gerar)
 $valid_users = [
-    'daniel' => 'c58a9dd28d6a89216ed14d2ac156b658aca74449c879d79243bf0dea91757863', // hash de GURPZine MediaWiki em Bitwarden
+    'admin' => '83a15c51d38269306b790f31f9d300489bc93f426868e543dc00cb11129780ba', // hash of '123456'
  ];
 
 // Processa login
