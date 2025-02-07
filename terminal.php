@@ -1,5 +1,5 @@
 <!--
-/*  terminal.php - version 1 - 2025-02-04
+/*  terminal.php - version 1 - 2025-02-07
  *
  *  MIT License
  *
@@ -136,7 +136,7 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                             
                             // Commands existing in the php files included above
                             $validCommands = array('about', 'cd', 'clear', 'cp', 'help', '?', 'ls',
-                                                   'mv', 'mkdir', 'pwd', 'unzap', 'rmdir', 'rm');
+                                                   'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
                             
                             if (in_array($command[0], $validCommands)) {
                                 switch($command[0]){
