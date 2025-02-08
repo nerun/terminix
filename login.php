@@ -70,24 +70,24 @@ if (is_file(SHADOW)) {
     include(SHADOW);
 }
 
-// Processa login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $passphrase = $_POST['password'] ?? '';
     
-    // $data[1] = algorithm; $data[2] = salt; $data[3] = hash
-    $data = explode('$', $valid_users[$username]);
-
-    $password = hash_hmac($algos[$data[1]], $passphrase, $data[2]);
-
-    if (isset($valid_users[$username]) && $password == $data[3]) {
-        $unix_time = time();
-        login_status("on:$unix_time");
-        header("Location: terminal.php");
-        exit;
-    } else {
-        $error = "Invalid username or password";
+    if (isset($valid_users[$username])) {
+        // $data[1] = algorithm; $data[2] = salt; $data[3] = hash
+        $data = explode('$', $valid_users[$username]);
+    
+        $password = hash_hmac($algos[$data[1]], $passphrase, $data[2]);
+    
+        if ($password === $data[3]) {
+            $unix_time = time();
+            login_status("on:$unix_time");
+            header("Location: terminal.php");
+            exit;
+        }
     }
+    $error = "Invalid username or password";
 }
 
 ?>
