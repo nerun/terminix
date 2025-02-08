@@ -33,20 +33,24 @@ if ($login === 'off') {
     header("Refresh: 0");
 }
 
-// Simulação de credenciais com senha hash (use password_hash() para gerar)
+$algos = hash_hmac_algos(); // [5] => sha256, [9] => sha512, [11] => sha3-256
+
 $valid_users = [
-    'admin' => '83a15c51d38269306b790f31f9d300489bc93f426868e543dc00cb11129780ba', // hash of '123456'
+    // $algo$salt$hash
+    'admin' => '$11$47aHeAuRQmMe95f/hYZts4CNDsIDJX6wSItnK9GyJG81$2c8d3574786e31fe060eedeadee67700e011093b5aaf2bbc944a27e0f987bb67',
  ];
 
 // Processa login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $passphrase = $_POST['password'] ?? '';
+    
+    // $data[1] = algorithm; $data[2] = salt; $data[3] = hash
+    $data = explode('$', $valid_users[$username]);
 
-    $salt = '$2y$10$6cf3366c7f7aafd72be4d6918a80bf7b079ec99d355c';
-    $password = hash_hmac('sha3-256', $password, $salt);
+    $password = hash_hmac($algos[$data[1]], $passphrase, $data[2]);
 
-    if (isset($valid_users[$username]) && $password == $valid_users[$username]) {
+    if (isset($valid_users[$username]) && $password == $data[3]) {
         $unix_time = time();
         login_status("on:$unix_time");
         header("Location: terminal.php");

@@ -1,6 +1,6 @@
 # Terminix - mini PHP terminal emulator
 
-Terminix is ​​a mini PHP terminal emulator. It was created to overcome the lack of a Linux terminal on low-cost servers (usually collective). It provides basic commands for manipulating files and directories, as well as decompression.
+Terminix is ​​a mini PHP terminal emulator. It was created to address the shortcomings of low-cost servers (usually collective), which do not provide access to a terminal emulator, do not have SSH connectivity, and do not enable the use of PHP's `exec()` command. It provides basic commands for file and directory manipulation, as well as decompression.
 
 ![Terminix](screenshot.webp)
 
@@ -16,67 +16,55 @@ Terminix specific:
  
 ## Installation
 
-Download [all the files](https://github.com/nerun/terminix/zipball/main). You won't need `README.md` or `screenshot.png`, but the rest certainly will. Especially `.htaccess`, for your security.
+Download [all the files](https://github.com/nerun/terminix/zipball/main). You won't need `README.md` or `screenshot.webp`, but the rest certainly will. Especially `.htaccess`, for your security.
 
-Now install all files in any folder on your server (do not forget `.htaccess`, it's a hidden file!).
+Unzip all files to any folder on your server (do not forget `.htaccess`, it's a hidden file!).
 
-Assuming you have installed the files in the `/terminal` folder on your server, then to access the terminal, go to `login.php`:
+Assuming you have installed the files in the `/terminal` folder on your server then, to access the terminal, go to `login.php`:
 
     https://www.yoursite.com/terminal/login.php
 
 Defaults:
  - username: `admin`
- - password: `123456`
+ - passphrase: `123456`
 
-## Change users, passwords and salt
+## Changing users and passwords
 
-Open file `login.php`, and search for `$valid_users` and `$salt`:
+Open file `login.php`, and search for `$valid_users`:
 
 ```php
 $valid_users = [
-    'admin' => '83a15c51d38269306b790f31f9d300489bc93f426868e543dc00cb11129780ba', // hash of '123456'
+    'admin' => '$algorithm$salt$hash',
  ];
 ```
 
-```php
-$salt = '$2y$10$6cf3366c7f7aafd72be4d6918a80bf7b079ec99d355c';
-```
+On modern Unix/Linux systems, password hashes follow the format: `$algorithm$salt$hash`. Which means, separated by dollar sign (`$`):
+ - `algorithm` = algorithm number as per the `hash_hmac_algos()` array, see below
+ - `salt` = salt used
+ - `hash` = the hash itself
 
-You need to change username "admin" and hash. If you want more security change `$salt` too.
+A passphrase is something user-friendly, easy to remember, but insecure. Whereas a password is something more sophisticated and secure, created by deriving the passphrase with the help of a "hash" algorithm and a random sequence called a "salt", which "seasons" the passphrase before using the algorithm on it.
 
-To gererate a new hash for a new password, using default `$salt`, use this script in a site like https://onlinephp.io, changing `$password`, of course:
-
-```php
-<?php
-$password = '123456';
-$salt = '$2y$10$6cf3366c7f7aafd72be4d6918a80bf7b079ec99d355c';
-$hash = hash_hmac('sha3-256', $password, $salt);
-echo "Hash for your new password: $hash\n";
-```
-
-To use a new different salt, use this instead:
+You need to change the username `admin` and `$algorithm$salt$hash`. To do this, run this script on a site like [onlinephp.io][1], changing `$algo` and `$passphrase` of course:
 
 ```php
 <?php
-$password = '123456';
+$algo = 11; // sha3-256
+$passphrase = '123456';
+// DO NOT CHANGE BELOW
+$algos = hash_hmac_algos();
 $salt = base64_encode(random_bytes(33));
-$hash = hash_hmac('sha3-256', $password, $salt);
-echo "Hash for your new password: $hash\n";
-echo "Update $salt in login.php with: $salt\n"
+$hash = hash_hmac($algos[$algo], $passphrase, $salt);
+echo "COPY PASSWORD HASH:\n";
+echo "\$$algo\$$salt\$$hash";
 ```
 
-## Change hash function
+The generated password will never be the same, even if the same passphrase is used, because the salt changes each time the password is generated. But to log in, you will use your passphrase, not your password. Since your password is stored in `$valid_users`, every time you use your passphrase, the generated password will be the same, and it will always check. A hacker will have a hard time figuring out your passphrase, even if they have access to your password (algorithm, salt, and hash).
 
-For a list of hash algorithms:
+For a list of hash algorithms and their numbers, use this on [onlinephp.io][1]:
 
 ```php
 print_r(hash_hmac_algos());
-```
-
-Change algorithm in `login.php`:
-
-```php
-$password = hash_hmac('sha3-256', $password, $salt);
 ```
 
 ## Change session timeout
@@ -86,3 +74,5 @@ Default session timeout is 15 minutes (900 seconds), you must change in both `lo
 ```php
 define('TIMEOUT', 900);
 ```
+
+[1]:https://onlinephp.io
