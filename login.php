@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/webp" href="terminix-ico.webp">
     <title>Terminix Login</title>
 </head>
-<body>
+<body style="background-color:#f5f5f5">
     <center>
         <div style="background-color:#272a35; width:250px; padding:20px; margin-top:180px; border-radius: 25px;">
             <h2 style="margin-top:0px; color:white">Terminix Login</h2>
