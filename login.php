@@ -105,14 +105,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <center>
-        <h2 style="margin-top:80px">Terminix Login</h2>
-        <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>\n"; ?>
-        <?php if (!empty($expired)) echo "<p style='text-align:center; color:red;'>$expired</p>\n" ?>
-        <form method="post">
-            <label>Username: <input type="text" name="username" required autofocus></label><br><br>
-            <label>Password: <input type="password" name="password" required></label><br><br>
-            <button type="submit">Login</button>
-        </form>
+        <div style="background-color:#272a35; width:250px; padding:20px; margin-top:180px; border-radius: 25px;">
+            <h2 style="margin-top:0px; color:white">Terminix Login</h2>
+            <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>\n"; ?>
+            <?php if (!empty($expired)) echo "<p style='text-align:center; color:red;'>$expired</p>\n" ?>
+            <form method="post">
+                <p><label style="color:white">Username: <input type="text" name="username" required autofocus></label></p>
+                <p><label style="color:white">Password: <input type="password" name="password" required></label></p>
+                <button type="submit">Login</button>
+            </form>
+        </div>
     </center>
 </body>
 </html>

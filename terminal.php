@@ -81,6 +81,7 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                 border: 1px solid black;
                 resize: both;
                 overflow: auto;
+                background-color: white;
             }
             a {
                 text-decoration: none;
@@ -93,7 +94,7 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
         <title>Terminix - PHP Terminal</title>
     </head>
     
-    <body>
+    <body style="background-color:#f5f5f5">
         <nav>
             <p align="center">
                 <button type="button"
@@ -102,7 +103,7 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                 </button>
             </p>
         </nav>
-    
+
         <header>
             <h2 align="center">Mini Terminal Emulator in PHP</h2>
         </header>
@@ -177,11 +178,14 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                     <button type="subscribe">ENTER</button>
                 </center>
             </form>
-            <p style="text-align:center">
+        </main>
+        
+        <footer>
+            <p align="center">
                 <a href="https://github.com/nerun/terminix" target="_blank" rel="noopener noreferrer">
                     Terminix 1.0
                 </a>
             </p>
-        </main>
+        </footer>
     </body>
 </html>
