@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin.php - version 1 - 2025-02-07
+/* terminal_bin.php - version 1 - 2025-02-08
  *
  *  MIT License
  *

@@ -1,5 +1,5 @@
-<!--
-/*  terminal.php - version 1 - 2025-02-07
+<?php
+/*  terminal.php - version 1 - 2025-02-08
  *
  *  MIT License
  *
@@ -23,11 +23,11 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
--->
 
-<?php
 define('LOGIN', 'login.tmp');
 define('TIMEOUT', 900);
+define('BUTTON1', 'https://www.gurpzine.com.br/tfm');
+define('BUTTON1_LABEL', 'Back');
 
 $login = trim(file_get_contents(LOGIN));
 
@@ -59,10 +59,9 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
         <meta name="author" content="Daniel Dias Rodrigues">
         <meta name="copyright" content="© 2024, 2025 Daniel Dias Rodrigues" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <meta http-equiv="cache-control" content="no-cache">                    <!-- tells browser not to cache -->
-        <meta http-equiv="expires" content="0">                                 <!-- says that the cache expires 'now' -->
-        <meta http-equiv="pragma" content="no-cache">                           <!-- says not to use cached stuff, if there is any -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+        <link rel="icon" type="image/webp" href="terminix-ico.webp">
         <style>
             input, pre, .terminal {
                 font-family: monospace;
@@ -83,6 +82,13 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                 resize: both;
                 overflow: auto;
             }
+            a {
+                text-decoration: none;
+                color: gray;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
         </style>
         <title>Terminix - PHP Terminal</title>
     </head>
@@ -91,14 +97,14 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
         <nav>
             <p align="center">
                 <button type="button"
-                    onclick="location.href='https://www.gurpzine.com.br/tfm';">
-                        Back
+                    onclick="location.href='<?php echo BUTTON1; ?>';">
+                        <?php echo BUTTON1_LABEL; ?>
                 </button>
             </p>
         </nav>
     
         <header>
-            <h2 align="center">Terminix - Mini Terminal Emulator in PHP</h2>
+            <h2 align="center">Mini Terminal Emulator in PHP</h2>
         </header>
         
         <main>
@@ -171,6 +177,11 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                     <button type="subscribe">ENTER</button>
                 </center>
             </form>
+            <p style="text-align:center">
+                <a href="https://github.com/nerun/terminix" target="_blank" rel="noopener noreferrer">
+                    Terminix 1.0
+                </a>
+            </p>
         </main>
     </body>
 </html>
