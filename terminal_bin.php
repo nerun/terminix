@@ -859,7 +859,7 @@ function about($args){
         return false;
     } else {
         $contents = file_exists('LICENSE.md') ? file_get_contents('LICENSE.md') :
-            file_get_contents('https://raw.githubusercontent.com/nerun/terminix/refs/heads/main/LICENSE');
+            file_get_contents('https://raw.githubusercontent.com/nerun/terminix/refs/heads/main/LICENSE.md');
         
         _log('<pre>' . $contents . '</pre>');
     }
