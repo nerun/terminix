@@ -30,12 +30,17 @@ Defaults:
 
 ## Changing users and passwords
 
-Open file `login.php`, and search for `$valid_users`:
+Create a `shadow.php` file and add this script. Replace 'users' and 'passwords' with your own, as explained below. Creating the shadow file overwrites the 'admin' account and password '123456' automatically. "Admin" is just a name, there is no distinction of privileges between users.
 
 ```php
+<?php
+// 'username' => '$algorithm$salt$hash',
 $valid_users = [
-    'admin' => '$algorithm$salt$hash',
- ];
+    'user1' => 'password1',
+    'user2' => 'password2',
+    'etc'   => 'passwordetc',
+];
+?>
 ```
 
 On modern Unix/Linux systems, password hashes follow the format: `$algorithm$salt$hash`. Which means, separated by dollar sign (`$`):
@@ -43,9 +48,9 @@ On modern Unix/Linux systems, password hashes follow the format: `$algorithm$sal
  - `salt` = salt used
  - `hash` = the hash itself
 
-A passphrase is something user-friendly, easy to remember, but insecure. Whereas a password is something more sophisticated and secure, created by deriving the passphrase with the help of a "hash" algorithm and a random sequence called a "salt", which "seasons" the passphrase before using the algorithm on it.
+A passphrase is user-friendly, easy to remember, but insecure. Whereas a password is more sophisticated and secure, created by deriving the passphrase with the help of a "hash" algorithm and a random sequence called a "salt", which "seasons" the passphrase before using the algorithm on it.
 
-You need to change the username `admin` and `$algorithm$salt$hash`. To do this, run this script on a site like [onlinephp.io][1], changing `$algo` and `$passphrase` of course:
+In order to create a password in the format `$algorithm$salt$hash` to your username, run this script on a site like [onlinephp.io][1], changing `$algo` and `$passphrase` of course:
 
 ```php
 <?php
@@ -59,7 +64,7 @@ echo "COPY PASSWORD HASH:\n";
 echo "\$$algo\$$salt\$$hash";
 ```
 
-The generated password will never be the same, even if the same passphrase is used, because the salt changes each time the password is generated. But to log in, you will use your passphrase, not your password. Since your password is stored in `$valid_users`, every time you use your passphrase, the generated password will be the same, and it will always check. A hacker will have a hard time figuring out your passphrase, even if they have access to your password (algorithm, salt, and hash).
+The generated password will never be the same, even if the same passphrase is used, because the salt changes each time the password is generated. But to log in, you will use your passphrase, not your password. Since your password is stored in `shadow.php`, every time you use your passphrase, the generated password will be the same, and it will always check. A hacker will have a hard time figuring out your passphrase, even if they have access to your password (algorithm, salt, and hash).
 
 For a list of hash algorithms and their numbers, use this on [onlinephp.io][1]:
 
@@ -69,10 +74,19 @@ print_r(hash_hmac_algos());
 
 ## Change session timeout
 
-Default session timeout is 15 minutes (900 seconds), you must change in both `login.php` and `terminal.php`:
+Default session timeout is 15 minutes (900 seconds), you may want to change it. Edit both `login.php` and `terminal.php`:
 
 ```php
 define('TIMEOUT', 900);
+```
+
+## Change the "Back" button label and URL
+
+Open `terminal.php` and at the top change this:
+
+```php
+define('BUTTON1', 'https://github.com/nerun/terminix');
+define('BUTTON1_LABEL', 'Back');
 ```
 
 [1]:https://onlinephp.io

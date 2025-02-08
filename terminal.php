@@ -26,7 +26,7 @@
 
 define('LOGIN', 'login.tmp');
 define('TIMEOUT', 900);
-define('BUTTON1', 'https://www.gurpzine.com.br/tfm');
+define('BUTTON1', 'https://github.com/nerun/terminix');
 define('BUTTON1_LABEL', 'Back');
 
 $login = trim(file_get_contents(LOGIN));
