@@ -1,5 +1,5 @@
 <?php
-/*  terminal.php - version 1 - 2025-02-08
+/*  terminal.php - version 1 - 2025-02-09
  *
  *  MIT License
  *

@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin.php - version 1 - 2025-02-08
+/* terminal_bin.php - version 1 - 2025-02-09
  *
  *  MIT License
  *
@@ -720,6 +720,14 @@ function mv($args){
 }
 
 /******************************************************************************
+ * EXIT                                                                       *
+ ******************************************************************************/
+function logout(){
+    login_status('off');
+    exit();
+}
+
+/******************************************************************************
  * HELP / ?                                                                   *
  ******************************************************************************/
 function help($args) {
@@ -761,8 +769,13 @@ function help($args) {
     
     If the destination file or folder exists, it will be overwritten.
 
+<b>exit</b>
+    usage: exit
+    Logs out of the current terminal session.
+
 <b>help</b>
     usage: help
+    alias: ?
     Show this help, listing all available commands.
 
 <b>ls</b>

@@ -1,5 +1,5 @@
 <?php
-/*  terminal.php - version 1 - 2025-02-08
+/*  terminal.php - version 1 - 2025-02-09
  *
  *  MIT License
  *
@@ -142,8 +142,8 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                             $command = str_replace('\ ', ' ', $command);
                             
                             // Commands existing in the php files included above
-                            $validCommands = array('about', 'cd', 'clear', 'cp', 'help', '?', 'ls',
-                                                   'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
+                            $validCommands = array('about', 'cd', 'clear', 'cp', 'exit', 'help', '?',
+                                                   'ls', 'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
                             
                             if (in_array($command[0], $validCommands)) {
                                 switch($command[0]){
@@ -155,6 +155,9 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                                         break;
                                     case 'mkdir':
                                         $command[0] = 'mkdirRecursive';
+                                        break;
+                                    case 'exit':
+                                        $command[0] = 'logout';
                                         break;
                                 }
 
