@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body style="background-color:#f5f5f5">
     <center>
-        <div style="background-color:#272a35; width:250px; padding:20px; margin-top:180px; border-radius: 25px;">
+        <div style="background-color:#404552; width:250px; padding:20px; margin-top:180px; border-radius: 25px;">
             <h2 style="margin-top:0px; color:white">Terminix Login</h2>
             <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>\n"; ?>
             <?php if (!empty($expired)) echo "<p style='text-align:center; color:red;'>$expired</p>\n" ?>

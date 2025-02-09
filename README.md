@@ -30,6 +30,8 @@ Defaults:
 
 ## Changing users and passwords
 
+![Login](screenshot-login.webp)
+
 Create a `shadow.php` file and add this script. Replace 'users' and 'passwords' with your own, as explained below. Creating the shadow file overwrites the 'admin' account and password '123456' automatically. "Admin" is just a name, there is no distinction of privileges between users.
 
 ```php
