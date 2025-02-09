@@ -7,12 +7,12 @@ Terminix is ​​a mini PHP terminal emulator. It was created to address the sh
 ## Commands available
 
 Classic ones:
- * cd, clear, cp, ls, mkdir, mv, pwd, rm, rmdir
+ * cd, clear, cp, exit, ls, mkdir, mv, pwd, rm, rmdir
  
 Terminix specific:
  * about - copyright and license information
  * help (or ?) - general help on commands
- * unzap - unarchiver and decompressor (bzip2, gz, rar, tar, zip)
+ * unzap - unarchiver and decompressor (bzip2, gzip, rar, tar, zip)
  
 ## Installation
 
