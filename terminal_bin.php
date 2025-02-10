@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin.php - version 1 - 2025-02-09
+/* terminal_bin.php - version 1 - 2025-02-10
  *
  *  MIT License
  *
@@ -723,6 +723,7 @@ function mv($args){
  * EXIT                                                                       *
  ******************************************************************************/
 function logout(){
+    _log( "Logoff at ". date("M d, Y, H:i", time()));
     login_status('off');
     return true;
 }

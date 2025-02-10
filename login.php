@@ -1,5 +1,5 @@
 <?php
-/*  terminal.php - version 1 - 2025-02-09
+/*  terminal.php - version 1 - 2025-02-10
  *
  *  MIT License
  *
@@ -66,9 +66,7 @@ $valid_users = [
     'admin' => '$11$47aHeAuRQmMe95f/hYZts4CNDsIDJX6wSItnK9GyJG81$2c8d3574786e31fe060eedeadee67700e011093b5aaf2bbc944a27e0f987bb67',
 ];
 
-if (is_file(SHADOW)) {
-    include(SHADOW);
-}
+@is_file(SHADOW) && @include SHADOW;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';

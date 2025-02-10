@@ -1,5 +1,5 @@
 <?php
-/* terminal_bin_unzap.php - version 1 - 2025-02-09
+/* terminal_bin_unzap.php - version 1 - 2025-02-10
  *
  *  MIT License
  *
