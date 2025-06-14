@@ -5,13 +5,18 @@ Options -Indexes -MultiViews +FollowSymLinks
 RewriteEngine On
 RewriteBase /terminal/
 
-# Bloqueia o acesso direto a qualquer arquivo de mídia dentro de /terminal/
+# Allow terminix-ico.webp
+RewriteCond %{REQUEST_URI} ^/terminal/terminix-ico\.webp$ [NC]
+RewriteRule ^ - [L]
+
+# Blocks direct access to any media files within /terminal/
 RewriteCond %{REQUEST_URI} ^/terminal/.*\.(jpg|jpeg|png|gif|webp|bmp|svg|mp4|pdf|txt|zip)$ [NC]
 RewriteRule ^.*$ /terminal/login.php [L,R=302]
 
-# Permite acesso direto a login.php e terminal.php
+# Allows direct access to login.php and terminal.php
 RewriteCond %{REQUEST_URI} !^/terminal/login\.php$ [NC]
 RewriteCond %{REQUEST_URI} !^/terminal/terminal\.php$ [NC]
 
-# Redireciona tudo para login.php
+# Redirect everything to login.php
 RewriteRule ^.*$ /terminal/login.php [L,R=302]
+
