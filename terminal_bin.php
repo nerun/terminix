@@ -222,7 +222,7 @@ function ls($args){
                 if ( is_dir("$folder/$item") == true ){
                     // &#128447; = 🖿
                     $perm_date = _perm_date("$folder/$item", $format, $file_sizes["$item"]);
-                    _log($perm_date . '<span style="color:#0067a5;">&#128447; ' . $item . '</span>');
+                    _log($perm_date . '<span style="color:#0067a5; line-height:1.2;">&#128447; ' . $item . '</span>');
                 }
             }
             
