@@ -1,27 +1,28 @@
 <?php
-/*  terminal.php - version 1 - 2025-02-10
+/*  login.php - version 2 - 2026-05-10
  *
- *  MIT License
+ * The MIT License
  *
- *  Copyright (c) 2024, 2025 Daniel Dias Rodrigues <danieldiasr@gmail.com>.
+ * Copyright (c) 2024 Daniel Dias Rodrigues <danieldiasr@gmail.com>
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 define('LOGIN', 'login.tmp');
@@ -59,26 +60,37 @@ if ($login === 'off') {
     header("Refresh: 0");
 }
 
-$algos = hash_hmac_algos(); // [5] => sha256, [9] => sha512, [11] => sha3-256
+$algorithm = PASSWORD_BCRYPT;
 
-// 'username' => '$algorithm$salt$hash',
+$pepper = 'Mrt0lWCxGDuxPLLQ.r1HwO';
+
+/* 'username' => '$AL$CT$SALT_22_chars_________HASH_until_the_end',
+ * AL = algorithm = 2y = BCRYPT
+ * CT = cost = 12 (default) = 2^12 = 4096 iterations
+ * SALT = random, always 22 characters in BCRYPT
+ * HASH = the rest of the password
+ */
 $valid_users = [
-    'admin' => '$11$47aHeAuRQmMe95f/hYZts4CNDsIDJX6wSItnK9GyJG81$2c8d3574786e31fe060eedeadee67700e011093b5aaf2bbc944a27e0f987bb67',
+    'admin' => '$2y$12$lS.GL07zZI.tpfFPDgk7C.wekfkT93Lnyn2xa0YQk/Yedk31gdEp6',
 ];
 
+// SHADOW overwrites $valid_users and $algorithm above
 @is_file(SHADOW) && @include SHADOW;
 
+function hashPassword(string $password, string $pepper, int $algorithm): string {
+    return password_hash($password . $pepper, $algorithm);
+}
+
+function verifyPassword(string $password, string $hash, string $pepper): bool {
+    return password_verify($password . $pepper, $hash);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
+    $username   = $_POST['username'] ?? '';
     $passphrase = $_POST['password'] ?? '';
-    
+
     if (isset($valid_users[$username])) {
-        // $data[1] = algorithm; $data[2] = salt; $data[3] = hash
-        $data = explode('$', $valid_users[$username]);
-    
-        $password = hash_hmac($algos[$data[1]], $passphrase, $data[2]);
-    
-        if ($password === $data[3]) {
+        if (verifyPassword($passphrase, $valid_users[$username], $pepper)) {
             $unix_time = time();
             login_status("on:$unix_time");
             header("Location: terminal.php");
@@ -94,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <meta name="author" content="Daniel Dias Rodrigues">
-    <meta name="copyright" content="© 2024, 2025 Daniel Dias Rodrigues" />
+    <meta name="copyright" content="© 2024 Daniel Dias Rodrigues" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
