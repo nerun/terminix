@@ -32,7 +32,8 @@ define('BUTTON1_LABEL', 'Back');
 
 $login = trim(file_get_contents(LOGIN));
 
-function login_status($status){
+function login_status($status)
+{
     global $login;
     file_put_contents(LOGIN, $status);
     $login = trim(file_get_contents(LOGIN));
@@ -44,7 +45,7 @@ if (!is_file(LOGIN) || empty($login)) {
 
 if (preg_match('/^on:(\d+)$/', $login, $matches)) {
     $unixtime = (int) $matches[1];
-    if (time() - $unixtime > TIMEOUT){
+    if (time() - $unixtime > TIMEOUT) {
         login_status('expired');
         header("Location: login.php");
     }
@@ -119,59 +120,59 @@ if (preg_match('/^on:(\d+)$/', $login, $matches)) {
                         };
                     </script>\n";
 
-                        include('./terminal_bin.php');
-                        include('./terminal_bin_unzap.php');
+include('./terminal_bin.php');
+include('./terminal_bin_unzap.php');
 
-                        // Reset log every 18 hours (1h = 3600)
-                        $timediff = time() - filemtime(LOGFILE);
-                        if ( $timediff >= 64800 ){
-                            file_put_contents(LOGFILE, null);
-                        }
+// Reset log every 18 hours (1h = 3600)
+$timediff = time() - filemtime(LOGFILE);
+if ($timediff >= 64800) {
+    file_put_contents(LOGFILE, null);
+}
 
-                        readfile(LOGFILE);
-                        
-                        echo "\t\t\t\t\t<div id=\"bottom\"></div>\n";
-                        echo "\t\t\t\t\t<script type=\"text/javascript\">bottom()</script>\n";
+readfile(LOGFILE);
 
-                        if (isset($_POST['command'])) {
-                            // log command
-                            $input = trim($_POST['command']);
-                            _log("$ $input");
+echo "\t\t\t\t\t<div id=\"bottom\"></div>\n";
+echo "\t\t\t\t\t<script type=\"text/javascript\">bottom()</script>\n";
 
-                            // Creates an array from string using space as delimiter
-                            $command = preg_split('/(?<!\\\\)\s+/', $input);
-                            $command = str_replace('\ ', ' ', $command);
-                            
-                            // Commands existing in the php files included above
-                            $validCommands = array('about', 'cd', 'clear', 'cp', 'exit', 'help', '?',
-                                                   'ls', 'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
-                            
-                            if (in_array($command[0], $validCommands)) {
-                                switch($command[0]){
-                                    case '?':
-                                        $command[0] = 'help';
-                                        break;
-                                    case 'rmdir':
-                                        $command[0] = 'remdir';
-                                        break;
-                                    case 'mkdir':
-                                        $command[0] = 'mkdirRecursive';
-                                        break;
-                                    case 'exit':
-                                        $command[0] = 'logout';
-                                        break;
-                                }
+if (isset($_POST['command'])) {
+    // log command
+    $input = trim($_POST['command']);
+    _log("$ $input");
 
-                                // Call the $command[0] function and pass subarray as arguments
-                                // subarray = array $command minus 1st element
-                                call_user_func($command[0], array_slice($command,1));
-                            } else {
-                                _log('command not found: '.$command[0]);
-                            }
+    // Creates an array from string using space as delimiter
+    $command = preg_split('/(?<!\\\\)\s+/', $input);
+    $command = str_replace('\ ', ' ', $command);
 
-                            echo "<meta http-equiv='refresh' content='0'>";
-                        }
-                    ?>
+    // Commands existing in the php files included above
+    $validCommands = array('about', 'cd', 'clear', 'cp', 'exit', 'help', '?',
+                           'ls', 'mkdir', 'mv', 'pwd', 'rm', 'rmdir', 'unzap');
+
+    if (in_array($command[0], $validCommands)) {
+        switch ($command[0]) {
+            case '?':
+                $command[0] = 'help';
+                break;
+            case 'rmdir':
+                $command[0] = 'remdir';
+                break;
+            case 'mkdir':
+                $command[0] = 'mkdirRecursive';
+                break;
+            case 'exit':
+                $command[0] = 'logout';
+                break;
+        }
+
+        // Call the $command[0] function and pass subarray as arguments
+        // subarray = array $command minus 1st element
+        call_user_func($command[0], array_slice($command, 1));
+    } else {
+        _log('command not found: '.$command[0]);
+    }
+
+    echo "<meta http-equiv='refresh' content='0'>";
+}
+?>
                 </div>
 
                 <center>

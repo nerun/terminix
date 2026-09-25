@@ -1,4 +1,5 @@
 <?php
+
 /* terminal_bin_unzap.php - version 2 - 2026-05-10
  *
  * The MIT License
@@ -35,12 +36,13 @@
 set_time_limit(0);
 ini_set('max_execution_time', 0);
 
-function bunzip2($data, $ext, $expath) {
+function bunzip2($data, $ext, $expath)
+{
     if (!extension_loaded('bz2')) {
         _log("Error: unzap: Bzip2 library is not available.");
         return false;
     }
-    
+
     $extensions = [
         'tbz2' => '.tar',
         'tbz'  => '.tar',
@@ -72,12 +74,13 @@ function bunzip2($data, $ext, $expath) {
     return true;
 }
 
-function gunzip($data, $ext, $expath) {
+function gunzip($data, $ext, $expath)
+{
     if (!extension_loaded('zlib')) {
         _log("Error: unzap: Gzip (zlib) library is not available.");
         return false;
     }
-    
+
     $extensions = [
         'tgz' => '.tar',
         'gz'  => ''
@@ -114,7 +117,8 @@ function gunzip($data, $ext, $expath) {
     return true;
 }
 
-function unrar($data, $ext, $expath) {
+function unrar($data, $ext, $expath)
+{
     if (!class_exists('RarArchive')) {
         _log("Error: unzap: RAR library is not available.");
         return false;
@@ -149,12 +153,13 @@ function unrar($data, $ext, $expath) {
     return true;
 }
 
-function untar($data, $ext = null, $expath = null) {
+function untar($data, $ext = null, $expath = null)
+{
     if (!extension_loaded('phar')) {
         _log("Error: unzap: Tarball (Phar) library is not available.");
         return false;
     }
-    
+
     $expath = $expath ?? dirname($data);
 
     $phar = new PharData($data);
@@ -170,13 +175,14 @@ function untar($data, $ext = null, $expath = null) {
     return true;
 }
 
-function unzip($data, $ext, $expath) {
+function unzip($data, $ext, $expath)
+{
     if (!extension_loaded('zip')) {
         _log("Error: unzap: Zip library is not available.");
         return false;
     }
 
-    $zip = new ZipArchive;
+    $zip = new ZipArchive();
     $success = true;
 
     if ($zip->open($data)) {
@@ -191,19 +197,20 @@ function unzip($data, $ext, $expath) {
         _log("Error: couldn't open $data.");
         $success = false;
     }
-    
+
     return $success;
 }
 
 // If file is a tar.gz or tar.bz2
-function is_tarball($filename) {
+function is_tarball($filename)
+{
     if (@file_exists($filename)) {
         _log("extracted successfully!");
-        
+
         // Now check if the extracted file is a tarball.
         $filename_ext = pathinfo($filename, PATHINFO_EXTENSION);
-        
-        if ( $filename_ext == 'tar' ) {
+
+        if ($filename_ext == 'tar') {
             $filename_short = preg_replace(ROOT_PATTERN, '', $filename);
             _log("unarchiving {$filename_short}...");
             untar($filename);
@@ -213,11 +220,12 @@ function is_tarball($filename) {
         _log("Error: failed to be extracted!");
         return false;
     }
-    
+
     return true;
 }
 
-function unzap($args) {
+function unzap($args)
+{
     $count_args = count($args);
 
     if ($count_args > 2) {
@@ -273,5 +281,3 @@ function unzap($args) {
 
     return true;
 }
-
-?>

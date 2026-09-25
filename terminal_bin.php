@@ -1,4 +1,5 @@
 <?php
+
 /* terminal_bin.php - version 2 - 2026-05-10
  *
  * The MIT License
@@ -47,7 +48,8 @@ unset($currentDir);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-function _log($log, $mode="a") {
+function _log($log, $mode = "a")
+{
     // Mode "a" open a file for write only. The existing data in file is preserved.
     $logfile = fopen(LOGFILE, $mode) or die("Unable to open file " . LOGFILE);
     flock($logfile, LOCK_EX);
@@ -57,7 +59,8 @@ function _log($log, $mode="a") {
     return true;
 }
 
-function _perms($perms){
+function _perms($perms)
+{
     $info = match ($perms & 0xF000) {
         0xC000 => 's', // socket
         0xA000 => 'l', // symbolic link
@@ -68,43 +71,45 @@ function _perms($perms){
         0x1000 => 'p', // FIFO pipe
         default => 'u', // unknown
     };
-    
+
     // Owner
     $info .= (($perms & 0x0100) ? 'r' : '-');
     $info .= (($perms & 0x0080) ? 'w' : '-');
     $info .= (($perms & 0x0040) ?
-                (($perms & 0x0800) ? 's' : 'x' ) :
+                (($perms & 0x0800) ? 's' : 'x') :
                 (($perms & 0x0800) ? 'S' : '-'));
-    
+
     // Group
     $info .= (($perms & 0x0020) ? 'r' : '-');
     $info .= (($perms & 0x0010) ? 'w' : '-');
     $info .= (($perms & 0x0008) ?
-                (($perms & 0x0400) ? 's' : 'x' ) :
+                (($perms & 0x0400) ? 's' : 'x') :
                 (($perms & 0x0400) ? 'S' : '-'));
-    
+
     // World
     $info .= (($perms & 0x0004) ? 'r' : '-');
     $info .= (($perms & 0x0002) ? 'w' : '-');
     $info .= (($perms & 0x0001) ?
-                (($perms & 0x0200) ? 't' : 'x' ) :
+                (($perms & 0x0200) ? 't' : 'x') :
                 (($perms & 0x0200) ? 'T' : '-'));
-    
+
     return $info;
 }
 
-function GetDirectorySize($path){
+function GetDirectorySize($path)
+{
     $bytestotal = 0;
     $path = realpath($path);
-    if($path!==false && $path!='' && file_exists($path)){
-        foreach(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)) as $object){
+    if ($path !== false && $path != '' && file_exists($path)) {
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)) as $object) {
             $bytestotal += filesize($object);
         }
     }
     return $bytestotal;
 }
 
-function normalizePath($path) {
+function normalizePath($path)
+{
     $parts = explode(DIRECTORY_SEPARATOR, trim($path, DIRECTORY_SEPARATOR));
     $resolvedParts = [];
 
@@ -121,7 +126,8 @@ function normalizePath($path) {
     return DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $resolvedParts);
 }
 
-function getExistingPath($path) {
+function getExistingPath($path)
+{
     $path = normalizePath($path); // Normalizes the path to resolve '..'
     $parts = explode(DIRECTORY_SEPARATOR, trim($path, DIRECTORY_SEPARATOR));
     $existingPath = DIRECTORY_SEPARATOR;
@@ -140,7 +146,8 @@ function getExistingPath($path) {
     return rtrim($existingPath, DIRECTORY_SEPARATOR);
 }
 
-function truepath($path){
+function truepath($path)
+{
     // Absolute path, resolves from ROOT
     // Relative path, resolves from current directory
     $tPath = ($path[0] == DIRECTORY_SEPARATOR) ? ROOT : CWD;
@@ -152,18 +159,20 @@ function truepath($path){
 /******************************************************************************
  * LS                                                                         *
  ******************************************************************************/
-function ls($args){
+function ls($args)
+{
     $folders = array();
-    
-    if ( empty($args) ){
+
+    if (empty($args)) {
         $folders['.'] = CWD;
     } else {
-        foreach ( $args as $folder_to_scan ){
+        foreach ($args as $folder_to_scan) {
             $folders[$folder_to_scan] = CWD . DIRECTORY_SEPARATOR . $folder_to_scan;
         }
     }
-    
-    function _perm_date($path, $format, $item_size){
+
+    function _perm_date($path, $format, $item_size)
+    {
         //$octal = decoct(fileperms("$path") & 0777);
         $size = sprintf("$format", $item_size);
         $size = preg_replace('/ /', '&ensp;', $size);
@@ -171,23 +180,23 @@ function ls($args){
         $date = '<span style="color:green">' . date("M d Y H:i", filemtime("$path")) . '</span>';
         return $perm . '&ensp;&ensp;' . $size . '&ensp;&ensp;' . $date . '&ensp;&ensp;';
     }
-    
-    foreach ( $folders as $key=>$value ){
+
+    foreach ($folders as $key => $value) {
         $folder = $value;
-        
+
         $real_folder = realpath($folder);
-        
-        if ( !empty($real_folder) && strlen($real_folder) < strlen(realpath(ROOT)) ) {
+
+        if (!empty($real_folder) && strlen($real_folder) < strlen(realpath(ROOT))) {
             // Do not go above ROOT!
             $folder = ROOT;
         }
-        
-        if( count($folders) > 1 ){
+
+        if (count($folders) > 1) {
             _log("$key:");
         }
-        
-        if ( !is_dir($folder) ){
-            if ( is_file($folder) ){
+
+        if (!is_dir($folder)) {
+            if (is_file($folder)) {
                 $file = substr($folder, strrpos($folder, DIRECTORY_SEPARATOR) + 1);
                 $file_s = number_format(filesize($folder));
                 $format = "%" . strlen($file_s) . "s";
@@ -201,42 +210,42 @@ function ls($args){
             natcasesort($scanned);
 
             $siz = GetDirectorySize($folder);
-    
+
             _log('total: ' . number_format($siz) . ' bytes');
-            
+
             $file_sizes = array();
-            foreach ($scanned as $item){
+            foreach ($scanned as $item) {
                 $item_size = number_format(filesize("$folder/$item"));
                 $file_sizes["$item"] = $item_size;
             }
-            
+
             $longest_siz = 0;
-            foreach($file_sizes as $fs_key => $fs_value){
-                if ( strlen($fs_value) > $longest_siz ){
+            foreach ($file_sizes as $fs_key => $fs_value) {
+                if (strlen($fs_value) > $longest_siz) {
                     $longest_siz = strlen($fs_value);
                 }
             }
             $format = "%" . $longest_siz . "s";
-            
+
             // --group-directories-first
-            foreach ($scanned as $item){
-                if ( is_dir("$folder/$item") == true ){
+            foreach ($scanned as $item) {
+                if (is_dir("$folder/$item") == true) {
                     // &#128447; = 🖿
                     $perm_date = _perm_date("$folder/$item", $format, $file_sizes["$item"]);
                     _log($perm_date . '<span style="color:#0067a5; line-height:1.2;">&#128447; ' . $item . '</span>');
                 }
             }
-            
+
             // list files
-            foreach ($scanned as $item){
-                if ( is_dir("$folder/$item") == false ){
+            foreach ($scanned as $item) {
+                if (is_dir("$folder/$item") == false) {
                     $perm_date = _perm_date("$folder/$item", $format, $file_sizes["$item"]);
                     _log($perm_date . $item);
                 }
             }
         }
-        
-        if( count($folders) > 1 && $key !== array_key_last($folders) ){
+
+        if (count($folders) > 1 && $key !== array_key_last($folders)) {
             _log('');
         }
     }
@@ -245,11 +254,12 @@ function ls($args){
 /******************************************************************************
  * CLEAR                                                                      *
  ******************************************************************************/
-function clear($args){
-    if ($args){
+function clear($args)
+{
+    if ($args) {
         _log("clear: too many arguments");
         return false;
-    } else{
+    } else {
         file_put_contents(LOGFILE, null);
     }
 
@@ -259,15 +269,16 @@ function clear($args){
 /******************************************************************************
  * PWD                                                                        *
  ******************************************************************************/
-function pwd($args){
+function pwd($args)
+{
     if ($args) {
         _log("pwd: too many arguments");
         return false;
     }
-    
+
     $pwd = preg_replace(ROOT_PATTERN, '', file_get_contents(CWDFILE));
-    
-    if(empty($pwd)){
+
+    if (empty($pwd)) {
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             // Windows
             $pwd = substr(ROOT, 0, 3);  // "C:\"
@@ -276,17 +287,18 @@ function pwd($args){
             $pwd = DIRECTORY_SEPARATOR; // "/"
         }
     }
-    
+
     _log($pwd . PHP_EOL);
-    
+
     return true;
 }
 
 /******************************************************************************
  * CD                                                                         *
  ******************************************************************************/
-function cd($path){
-    if ( count($path) > 1 ) {
+function cd($path)
+{
+    if (count($path) > 1) {
         _log("cd: too many arguments");
         return false;
     }
@@ -294,7 +306,7 @@ function cd($path){
     $path = $path[0];
 
     $newPath = realpath(truepath($path));
-    
+
     if ($newPath === false || (!is_dir($newPath) && !is_file($newPath))) {
         _log("cd: no such directory: $path");
         return false;
@@ -311,14 +323,15 @@ function cd($path){
     }
 
     file_put_contents(CWDFILE, $newPath);
-    
+
     return true;
 }
 
 /******************************************************************************
  * MKDIR                                                                      *
  ******************************************************************************/
-function mkdirRecursive($dirs) {
+function mkdirRecursive($dirs)
+{
     foreach ($dirs as $dir) {
         $newDir = truepath($dir);
 
@@ -349,17 +362,18 @@ function mkdirRecursive($dirs) {
 /******************************************************************************
  * RMDIR                                                                      *
  ******************************************************************************/
-function remdir($dirs) {
+function remdir($dirs)
+{
     foreach ($dirs as $dir) {
         $newDir = truepath($dir);
-        
+
         $existingPath = getExistingPath($newDir);
 
         if (strpos($existingPath, ROOT) !== 0) {
             _log("rmdir: cannot remove directory outside root: '$dir'.");
             continue;
         }
-        
+
         // Check if the path is a directory
         if (!is_dir($newDir)) {
             _log("rmdir: failed to remove '$dir': No such file or directory");
@@ -383,12 +397,13 @@ function remdir($dirs) {
 /******************************************************************************
  * RM                                                                         *
  ******************************************************************************/
-function rm($files) {
+function rm($files)
+{
     $success = true;
-    
+
     // Check if '-r' is present anywhere in the array
     $recursive = in_array('-r', $files, true);
-    
+
     // If found, remove it from the array
     if ($recursive) {
         $files = array_values(array_diff($files, ['-r']));
@@ -397,14 +412,14 @@ function rm($files) {
     // Iterate over the array of files
     foreach ($files as $file) {
         $absFile = truepath($file);
-        
+
         $existingPath = getExistingPath($absFile);
 
         if (strpos($existingPath, ROOT) !== 0) {
             _log("rm: cannot remove directory outside root: '$file'.");
             continue;
         }
-        
+
         // Check if the file or directory exists
         if (!file_exists($absFile)) {
             _log("rm: could not remove '$file': No such file or directory");
@@ -449,7 +464,8 @@ function rm($files) {
 }
 
 // Function to delete a directory and its contents recursively
-function delete_directory_recursive($dir) {
+function delete_directory_recursive($dir)
+{
     // Ensure the directory exists
     if (!is_dir($dir)) {
         return false;
@@ -477,10 +493,11 @@ function delete_directory_recursive($dir) {
 /******************************************************************************
  * CP                                                                         *
  ******************************************************************************/
-function cp($args){
+function cp($args)
+{
     $recursive = false;
     $explicit_destination = null;
-    
+
     foreach ($args as $i => $arg) {
         if ($arg === '-r') {
             $recursive = true;
@@ -496,11 +513,11 @@ function cp($args){
             }
         }
     }
-    
+
     $args = array_values($args); // Reindex the array after deletions
 
     $args_count = count($args);
-    
+
     if ($args_count <= 0) {
         _log("cp: missing file operand");
         return false;
@@ -508,7 +525,7 @@ function cp($args){
         _log("cp: missing destination file operand after '$args[0]'");
         return false;
     }
-    
+
     if (!$explicit_destination) {
         $destination_abs = array_pop($args);
         $args_count = count($args);
@@ -520,13 +537,13 @@ function cp($args){
     // Absolute and relative destination
     $destination_abs = truepath($destination_abs);
     $destination_rel = preg_replace(ROOT_PATTERN, '', $destination_abs);
-    
+
     if ($args_count == 1 && is_file(truepath($args[0]))) {
         if (!is_writable($destination_abs)) {
             _log("cp: '$destination_rel' does not have write permissions.");
             return false;
         }
-    
+
         if (!is_dir($destination_abs)) {
             $dest_dir = dirname($destination_abs);
             $dest_dir_rel = dirname($destination_rel);
@@ -534,7 +551,7 @@ function cp($args){
                 _log("Error: cp: cannot stat '$dest_dir_rel': No such directory.");
                 return false;
             }
-    
+
             if (!is_writable($dest_dir)) {
                 _log("cp: '$dest_dir_rel' does not have write permissions.");
                 return false;
@@ -549,11 +566,11 @@ function cp($args){
             return false;
         }
     }
-    
+
     foreach ($args as $source) {
         $source_abs = truepath($source);
         $source_rel = preg_replace(ROOT_PATTERN, '', $source_abs);
-        
+
         if (!is_readable($source_abs)) {
             _log("cp: '$source_rel' does not have read permissions.");
             continue;
@@ -573,7 +590,7 @@ function cp($args){
                     return false;
                 }
             } else {
-                // If destination is an existing file to be overwritten, 
+                // If destination is an existing file to be overwritten,
                 // or is the new file name of $source_abs
                 if (!copy($source_abs, $destination_abs)) {
                     _log("cp: failed to copy '$source_rel' to '$destination_rel'");
@@ -595,7 +612,7 @@ function cp($args){
                     $ending = DIRECTORY_SEPARATOR . $source_dir_name;
                     $destination_dir = $destination_abs . $ending;
                     $destination_dir_rel = $destination_rel . $ending;
-                    
+
                     // Ensure destination directory exists
                     if (!is_dir($destination_dir) && !mkdir($destination_dir, 0755, true)) {
                         _log("cp: failed to create directory '$destination_dir_rel'");
@@ -637,9 +654,10 @@ function cp($args){
 /******************************************************************************
  * MV                                                                         *
  ******************************************************************************/
-function mv($args){
+function mv($args)
+{
     $explicit_destination = null;
-    
+
     foreach ($args as $i => $arg) {
         if ($arg === '-t') {
             if (isset($args[$i + 1])) {
@@ -656,66 +674,66 @@ function mv($args){
     $args = array_values($args); // Reindex the array after deletions
     $args_count = count($args);
 
-    if ($args_count <= 0){
+    if ($args_count <= 0) {
         _log("mv: missing file operand");
         return false;
-    } elseif ($args_count == 1 && !isset($explicit_destination)){
+    } elseif ($args_count == 1 && !isset($explicit_destination)) {
         _log("mv: missing destination file operand after $args[0]");
         return false;
-    } elseif ( $args_count == 2 || ($args_count == 1 && isset($explicit_destination)) ){
+    } elseif ($args_count == 2 || ($args_count == 1 && isset($explicit_destination))) {
         $source = truepath($args[0]);
         $destination = truepath($explicit_destination ?? $args[1]);
 
-        if (!file_exists($source)){
+        if (!file_exists($source)) {
             _log("mv: cannot stat '$args[0]': No such file or directory");
             return false;
         }
-        
-        if (!file_exists(dirname($destination))){
+
+        if (!file_exists(dirname($destination))) {
             _log("mv: cannot stat '".dirname($args[1])."/': No such file or directory");
             return false;
         }
-        
-        if ( is_dir($destination) && file_exists($source) ){
+
+        if (is_dir($destination) && file_exists($source)) {
             $destination = $destination . DIRECTORY_SEPARATOR . basename($source);
         }
 
         return rename($source, $destination); // returns true or false
     } else { // $args_count >= 3
-        if (isset($explicit_destination)){
+        if (isset($explicit_destination)) {
             $destination_rel = $explicit_destination;
         } else {
             $destination_rel = $args[count($args) - 1];
             unset($args[count($args) - 1]);
             $args = array_values($args); // Reindex the array after deletion
         }
-        
+
         $destination_abs = truepath($destination_rel);
-        
-        if (!is_dir($destination_abs)){
+
+        if (!is_dir($destination_abs)) {
             _log("mv: target '$destination_rel' is not a directory");
             return false;
         }
-        
-        if (is_dir($destination_abs) && !is_writable($destination_abs)){
+
+        if (is_dir($destination_abs) && !is_writable($destination_abs)) {
             _log("mv: '$destination_rel' does not have write permissions.");
             return false;
         }
-        
+
         foreach ($args as $source) {
             $source_abs = truepath($source);
             $destination_final = $destination_abs;
-            
-            if (!file_exists($source_abs)){
+
+            if (!file_exists($source_abs)) {
                 _log("mv: cannot stat '$source': No such file or directory");
                 continue;
             } else { // file_exists($source_abs)
                 $destination_final .= DIRECTORY_SEPARATOR . basename($source);
             }
-            
+
             rename($source_abs, $destination_final);
         }
-        
+
         return true;
     }
 }
@@ -723,8 +741,9 @@ function mv($args){
 /******************************************************************************
  * EXIT                                                                       *
  ******************************************************************************/
-function logout(){
-    _log( "Logoff at ". date("M d, Y, H:i", time()));
+function logout()
+{
+    _log("Logoff at ". date("M d, Y, H:i", time()));
     login_status('off');
     return true;
 }
@@ -732,7 +751,8 @@ function logout(){
 /******************************************************************************
  * HELP / ?                                                                   *
  ******************************************************************************/
-function help($args) {
+function help($args)
+{
     if ($args) {
         _log("help: too many arguments");
         return;
@@ -848,17 +868,18 @@ function help($args) {
 EOD;
 
     _log($help);
-    
+
     return true;
 }
 
 /******************************************************************************
  * ABOUT                                                                      *
  ******************************************************************************/
-function about($args){
-    if ($args){
+function about($args)
+{
+    if ($args) {
         $args = implode(' ', $args);
-        
+
         switch ($args) {
             case 'myself':
                 _log('about: I have nothing to say about you...');
@@ -870,15 +891,14 @@ function about($args){
                 _log("about: I don't know who \"$args\" is, I can only talk about myself.");
                 break;
         }
-        
+
         return false;
     } else {
         $contents = file_exists('LICENSE.md') ? file_get_contents('LICENSE.md') :
             file_get_contents('https://raw.githubusercontent.com/nerun/terminix/refs/heads/main/LICENSE.md');
-        
+
         _log('<pre>' . $contents . '</pre>');
     }
-    
+
     return true;
 }
-?>
