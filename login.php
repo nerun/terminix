@@ -31,7 +31,8 @@ define('SHADOW', 'shadow.php');
 
 $login = trim(file_get_contents(LOGIN));
 
-function login_status($status){
+function login_status($status)
+{
     global $login;
     file_put_contents(LOGIN, $status);
     $login = trim(file_get_contents(LOGIN));
@@ -48,7 +49,7 @@ if ($login === 'off') {
     login_status('off');
 } elseif (preg_match('/^on:(\d+)$/', $login, $matches)) {
     $unixtime = (int) $matches[1];
-    if (time() - $unixtime <= TIMEOUT){
+    if (time() - $unixtime <= TIMEOUT) {
         header("Location: terminal.php");
         exit;
     } else {
@@ -77,11 +78,13 @@ $valid_users = [
 // SHADOW overwrites $valid_users and $algorithm above
 @is_file(SHADOW) && @include SHADOW;
 
-function hashPassword(string $password, string $pepper, int $algorithm): string {
+function hashPassword(string $password, string $pepper, int $algorithm): string
+{
     return password_hash($password . $pepper, $algorithm);
 }
 
-function verifyPassword(string $password, string $hash, string $pepper): bool {
+function verifyPassword(string $password, string $hash, string $pepper): bool
+{
     return password_verify($password . $pepper, $hash);
 }
 
@@ -117,8 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <center>
         <div style="background-color:#404552; width:250px; padding:20px; margin-top:180px; border-radius: 25px;">
             <h2 style="margin-top:0px; color:white">Terminix Login</h2>
-            <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>\n"; ?>
-            <?php if (!empty($expired)) echo "<p style='text-align:center; color:red;'>$expired</p>\n" ?>
+            <?php if (!empty($error)) {
+                echo "<p style='color:red;'>$error</p>\n";
+            } ?>
+            <?php if (!empty($expired)) {
+                echo "<p style='text-align:center; color:red;'>$expired</p>\n";
+            } ?>
             <form method="post">
                 <p><label style="color:white">Username: <input type="text" name="username" required autofocus></label></p>
                 <p><label style="color:white">Password: <input type="password" name="password" required></label></p>
